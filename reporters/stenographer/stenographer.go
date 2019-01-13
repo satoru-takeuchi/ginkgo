@@ -11,6 +11,7 @@ import (
 	"io"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/onsi/ginkgo/types"
 )
@@ -90,7 +91,7 @@ func (s *consoleStenographer) AnnounceSuite(description string, randomSeed int64
 		s.print(0, "[%d] %s ", randomSeed, s.colorize(boldStyle, description))
 		return
 	}
-	s.printBanner(fmt.Sprintf("Running Suite: %s", description), "=")
+	s.printBanner(fmt.Sprintf("unkounkounko: Running Suite: %s", description), "=")
 	s.print(0, "Random Seed: %s", s.colorize(boldStyle, "%d", randomSeed))
 	if randomizingAll {
 		s.print(0, " - Will randomize all specs")
@@ -198,7 +199,7 @@ func (s *consoleStenographer) AnnounceSpecWillRun(spec *types.SpecSummary) {
 		s.printNewLine()
 	}
 	index := len(spec.ComponentTexts) - 1
-	s.print(indentation, s.colorize(boldStyle, spec.ComponentTexts[index]))
+	s.print(indentation, s.colorize(boldStyle, time.Now().Format(time.Stamp) + ": " + spec.ComponentTexts[index]))
 	s.printNewLine()
 	s.print(indentation, s.colorize(lightGrayColor, spec.ComponentCodeLocations[index].String()))
 	s.printNewLine()
@@ -472,12 +473,12 @@ func (s *consoleStenographer) printSpecContext(componentTexts []string, componen
 			if succinct {
 				s.print(0, s.colorize(color+boldStyle, "[%s] %s ", blockType, componentTexts[i]))
 			} else {
-				s.println(indentation, s.colorize(color+boldStyle, "%s [%s]", componentTexts[i], blockType))
+				s.println(indentation, s.colorize(color+boldStyle, "%s [%s]", "unko " + componentTexts[i], blockType))
 				s.println(indentation, s.colorize(grayColor, "%s", componentCodeLocations[i]))
 			}
 		} else {
 			if succinct {
-				s.print(0, s.colorize(alternatingColors[i%2], "%s ", componentTexts[i]))
+				s.print(0, s.colorize(alternatingColors[i%2], "%s ", "unko " + componentTexts[i]))
 			} else {
 				s.println(indentation, componentTexts[i])
 				s.println(indentation, s.colorize(grayColor, "%s", componentCodeLocations[i]))
