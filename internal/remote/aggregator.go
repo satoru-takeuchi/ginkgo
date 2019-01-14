@@ -189,7 +189,7 @@ func (aggregator *Aggregator) announceAfterSuite(setupSummary *types.SetupSummar
 
 func (aggregator *Aggregator) announceSpec(specSummary *types.SpecSummary) {
 	if aggregator.config.Verbose && specSummary.State != types.SpecStatePending && specSummary.State != types.SpecStateSkipped {
-		aggregator.stenographer.AnnounceSpecWillRun(specSummary)
+		aggregator.stenographer.AnnounceSpecWillRun(specSummary, aggregator.config.Succinct)
 	}
 
 	aggregator.stenographer.AnnounceCapturedOutput(specSummary.CapturedOutput)

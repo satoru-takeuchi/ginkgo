@@ -49,7 +49,7 @@ func (reporter *DefaultReporter) AfterSuiteDidRun(setupSummary *types.SetupSumma
 
 func (reporter *DefaultReporter) SpecWillRun(specSummary *types.SpecSummary) {
 	if reporter.config.Verbose && !reporter.config.Succinct && specSummary.State != types.SpecStatePending && specSummary.State != types.SpecStateSkipped {
-		reporter.stenographer.AnnounceSpecWillRun(specSummary)
+		reporter.stenographer.AnnounceSpecWillRun(specSummary, reporter.config.Succinct)
 	}
 }
 

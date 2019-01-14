@@ -432,6 +432,8 @@ func By(text string, callbacks ...func()) {
 	if config.DefaultReporterConfig.NoColor {
 		preamble = "STEP"
 	}
+	if (config.DefaultReporterConfig.Succinct == false)
+		preamble = time.Now().Format(time.Stamp) + " " + preamble
 	fmt.Fprintln(GinkgoWriter, preamble+": "+text)
 	if len(callbacks) == 1 {
 		callbacks[0]()

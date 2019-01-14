@@ -42,7 +42,7 @@ type Stenographer interface {
 	AnnounceNumberOfSpecs(specsToRun int, total int, succinct bool)
 	AnnounceSpecRunCompletion(summary *types.SuiteSummary, succinct bool)
 
-	AnnounceSpecWillRun(spec *types.SpecSummary)
+	AnnounceSpecWillRun(spec *types.SpecSummary, succinct bool)
 	AnnounceBeforeSuiteFailure(summary *types.SetupSummary, succinct bool, fullTrace bool)
 	AnnounceAfterSuiteFailure(summary *types.SetupSummary, succinct bool, fullTrace bool)
 
@@ -60,6 +60,10 @@ type Stenographer interface {
 	AnnounceSpecFailed(spec *types.SpecSummary, succinct bool, fullTrace bool)
 
 	SummarizeFailures(summaries []*types.SpecSummary)
+}
+
+func timeStamp() string {
+	return time.Now().Format(time.Stamp)
 }
 
 func New(color bool, enableFlakes bool, writer io.Writer) Stenographer {
@@ -91,7 +95,7 @@ func (s *consoleStenographer) AnnounceSuite(description string, randomSeed int64
 		s.print(0, "[%d] %s ", randomSeed, s.colorize(boldStyle, description))
 		return
 	}
-	s.printBanner(fmt.Sprintf("unkounkounko: Running Suite: %s", description), "=")
+	s.printBanner(fmt.Sprintf("Running Suite: %s", description), "=")
 	s.print(0, "Random Seed: %s", s.colorize(boldStyle, "%d", randomSeed))
 	if randomizingAll {
 		s.print(0, " - Will randomize all specs")
@@ -187,7 +191,7 @@ func (s *consoleStenographer) AnnounceSpecRunCompletion(summary *types.SuiteSumm
 	)
 }
 
-func (s *consoleStenographer) AnnounceSpecWillRun(spec *types.SpecSummary) {
+func (s *consoleStenographer) AnnounceSpecWillRun(spec *types.SpecSummary, succinct bool) {
 	s.startBlock()
 	for i, text := range spec.ComponentTexts[1 : len(spec.ComponentTexts)-1] {
 		s.print(0, s.colorize(alternatingColors[i%2], text)+" ")
@@ -199,7 +203,13 @@ func (s *consoleStenographer) AnnounceSpecWillRun(spec *types.SpecSummary) {
 		s.printNewLine()
 	}
 	index := len(spec.ComponentTexts) - 1
-	s.print(indentation, s.colorize(boldStyle, time.Now().Format(time.Stamp) + ": " + spec.ComponentTexts[index]))
+	var ts string
+	if succinct {
+		ts = ""
+	} else {
+		ts = timeStamp()
+	}
+	s.print(indentation, s.colorize(boldStyle, ts + spec.ComponentTexts[index]))
 	s.printNewLine()
 	s.print(indentation, s.colorize(lightGrayColor, spec.ComponentCodeLocations[index].String()))
 	s.printNewLine()
